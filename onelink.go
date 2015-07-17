@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 
 	"github.com/heyLu/mu"
+	"github.com/heyLu/mu/connection"
 )
 
 var dbUrl = "files://db?name=onelink"
@@ -20,14 +21,19 @@ func main() {
 	}
 
 	if isNew {
-		data, err := ioutil.ReadFile("schema.edn")
-		if err != nil {
-			panic(err)
-		}
-
-		_, err = mu.TransactString(conn, string(data))
-		if err != nil {
-			panic(err)
-		}
+		mustTransactFile(conn, "schema.edn")
 	}
+}
+
+func mustTransactFile(conn connection.Connection, file string) {
+	data, err := ioutil.ReadFile(file)
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = mu.TransactString(conn, string(data))
+	if err != nil {
+		panic(err)
+	}
+
 }
