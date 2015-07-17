@@ -29,12 +29,13 @@ func main() {
 	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
+		db := conn.Db()
 		res, err := mu.QString(`
-{:find [?title ?description ?url]
+{:find [?topic ?title ?description ?url]
  :where [[?topic :topic/title ?title]
          [?topic :topic/description ?description]
          [?topic :topic/url ?url]]}`,
-			conn.Db())
+			db)
 		if err != nil {
 			log.Println(err)
 			http.Error(w, "internal server error", http.StatusInternalServerError)
@@ -42,19 +43,40 @@ func main() {
 		}
 
 		for k, _ := range res {
-			log.Println(k)
 			m := map[string]interface{}{
-				"title":       k.ValueAt(0),
-				"description": k.ValueAt(1),
-				"url":         k.ValueAt(2),
+				"comments":    db.Entity(k.ValueAt(0).(int)).Get(mu.Keyword("topic", "comments")),
+				"title":       k.ValueAt(1),
+				"description": k.ValueAt(2),
+				"url":         k.ValueAt(3),
 			}
-			indexTmpl.Execute(w, m)
+			err := indexTmpl.Execute(w, m)
+			if err != nil {
+				log.Println(err)
+			}
 		}
 	})
 	http.ListenAndServe("localhost:7777", nil)
 }
 
-var indexTmpl = template.Must(template.New("index.html").Parse(`<!doctype html>
+var tmplFuncs = template.FuncMap{
+	"kw": mu.Keyword,
+}
+
+var indexTmpl = template.Must(template.New("index.html").
+	Funcs(tmplFuncs).
+	Parse(`
+{{ define "Comment" }}
+<article class="comment">
+  <p>{{ .Get (kw "comment" "content") }}</p>
+  <section class="comments">
+  {{ range $comment := .Get (kw "comment" "replies") }}
+    {{ template "Comment" $comment }}
+  {{ end }}
+  </section>
+</article>
+{{ end }}
+
+<!doctype html>
 <html>
   <head>
     <title>{{ .title }} - onelink</title>
@@ -79,6 +101,13 @@ var indexTmpl = template.Must(template.New("index.html").Parse(`<!doctype html>
       text-align: center;
     }
 
+    #topic > .comments {
+      margin-top: 3em;
+      padding-left: 0;
+    }
+
+    .comments { padding-left: 1.5em; }
+
     a {
       color: #555
     }
@@ -92,6 +121,14 @@ var indexTmpl = template.Must(template.New("index.html").Parse(`<!doctype html>
 
         <p>{{ .description }}
         </p>
+
+        <section class="comments">
+        {{ range $comment := .comments }}
+          {{ template "Comment" $comment }}
+        {{ else }}
+          <p>No comments yet</p>
+        {{ end }}
+        </section>
       </article>
     </section>
   </body>

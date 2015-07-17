@@ -1,5 +1,23 @@
 [; create an initial topic, explaining how stuff works
- {:db/id #db/id[:db.part/user]
+ {:db/id #db/id[:db.part/user -1]
   :topic/title "Hello, World!"
   :topic/url "https://github.com/heyLu/onelink/#hello-world"
-  :topic/description "Welcome!"}]
+  :topic/description "Welcome!"}
+
+ [:db/add #db/id[:db.part/user -1] :topic/comments #db/id[:db.part/user -2]]
+ {:db/id #db/id[:db.part/user -2]
+  :comment/content "This is a comment, isn't it quite amazing?!"}
+
+ [:db/add #db/id[:db.part/user -2] :comment/replies #db/id[:db.part/user -3]]
+ {:db/id #db/id[:db.part/user -3]
+  :comment/content "And this is a reply, which is even more amazing!!!"}
+ [:db/add #db/id[:db.part/user -2] :comment/replies #db/id[:db.part/user -4]]
+ {:db/id #db/id[:db.part/user -4]
+  :comment/content "Another one, just for fun ..."}
+ [:db/add #db/id[:db.part/user -4] :comment/replies #db/id[:db.part/user -5]]
+ {:db/id #db/id[:db.part/user -5]
+  :comment/content "Ad"}
+ [:db/add #db/id[:db.part/user -5] :comment/replies #db/id[:db.part/user -6]]
+ {:db/id #db/id[:db.part/user -6]
+  :comment/content "infinitum"}
+ ]
