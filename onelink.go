@@ -59,12 +59,41 @@ var indexTmpl = template.Must(template.New("index.html").Parse(`<!doctype html>
   <head>
     <title>{{ .title }} - onelink</title>
     <meta charset="utf-8" />
+    <style>
+    body {
+      margin: 0;
+    }
+
+    #content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100vw;
+    }
+
+    #topic {
+      width: 80ex;
+    }
+
+    #topic h1 {
+      text-align: center;
+    }
+
+    a {
+      color: #555
+    }
+    </style>
   </head>
 
   <body>
-    <h1><a href="{{ .url }}">{{ .title }}</a></h1>
-    <p>{{ .description }}
-    </p>
+    <section id="content">
+      <article id="topic">
+        <h1><a href="{{ .url }}">{{ .title }}</a></h1>
+
+        <p>{{ .description }}
+        </p>
+      </article>
+    </section>
   </body>
 </html>
 `))
