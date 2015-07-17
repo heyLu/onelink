@@ -88,9 +88,9 @@ var indexTmpl = template.Must(template.New("index.html").
 
     #content {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      width: 100vw;
+      justify-content: center;
+      height: 100vh;
     }
 
     #topic {
