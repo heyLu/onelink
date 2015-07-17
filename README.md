@@ -81,9 +81,9 @@ some further ideas:
 
 i.e. communities that do things in an interesting way.
 
-- xoxo
-- meatspace
-- big boring system
+- [xoxo](https://xoxofest.com)
+- [meatspace](https://meatspac.es)
+- [big boring system](https://bigboringsystem.com)
 - news aggregators  (lots of problems with those, but they
     are a motivation for trying things differently.  and
     even with all their problems, they still surface
