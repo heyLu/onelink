@@ -74,6 +74,7 @@ some further ideas:
 - `:comment/replies`, a reference to replies to the comment
 - `:user/name`, a unique string identifying the user
 - `:user/description`, a short self-description of the user
+- `:user/joined`, the date the user joined the community
 
 ## Inspirations
 
