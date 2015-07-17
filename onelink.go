@@ -1,7 +1,10 @@
 package main
 
 import (
+	"html/template"
 	"io/ioutil"
+	"log"
+	"net/http"
 
 	"github.com/heyLu/mu"
 	"github.com/heyLu/mu/connection"
@@ -24,7 +27,47 @@ func main() {
 		mustTransactFile(conn, "schema.edn")
 		mustTransactFile(conn, "init.edn")
 	}
+
+	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
+		res, err := mu.QString(`
+{:find [?title ?description ?url]
+ :where [[?topic :topic/title ?title]
+         [?topic :topic/description ?description]
+         [?topic :topic/url ?url]]}`,
+			conn.Db())
+		if err != nil {
+			log.Println(err)
+			http.Error(w, "internal server error", http.StatusInternalServerError)
+			return
+		}
+
+		for k, _ := range res {
+			log.Println(k)
+			m := map[string]interface{}{
+				"title":       k.ValueAt(0),
+				"description": k.ValueAt(1),
+				"url":         k.ValueAt(2),
+			}
+			indexTmpl.Execute(w, m)
+		}
+	})
+	http.ListenAndServe("localhost:7777", nil)
 }
+
+var indexTmpl = template.Must(template.New("index.html").Parse(`<!doctype html>
+<html>
+  <head>
+    <title>{{ .title }} - onelink</title>
+    <meta charset="utf-8" />
+  </head>
+
+  <body>
+    <h1><a href="{{ .url }}">{{ .title }}</a></h1>
+    <p>{{ .description }}
+    </p>
+  </body>
+</html>
+`))
 
 func mustTransactFile(conn connection.Connection, file string) {
 	data, err := ioutil.ReadFile(file)
