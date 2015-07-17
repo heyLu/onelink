@@ -60,6 +60,7 @@ some further ideas:
     this disallows meta-discussion for now, but not really, because
     meta-discussion can take place if someone writes something about
     the topic, and then posts a link to that thing
+- `:topic/posted`, the date when the topic was posted
 - `:topic/comments`, references to comments about the topic
 - `:topic/id`, a short, unique, randomly generated string that will
     be used as a permanent identifier for the discussion
