@@ -93,6 +93,8 @@ i.e. communities that do things in an interesting way.
     not seen elsewhere, in bigger communities.  filter bubble
     problem, difficult to start with if you don't know
     anyone.)
+- link blogs, like the ones of [Andy Baio](http://waxy.org)
+    and [Christian Neukirchen](http://chneukirchen.org/trivium).
 
 ## Concerns
 
