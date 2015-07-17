@@ -102,7 +102,8 @@ var indexTmpl = template.Must(template.New("index.html").
     }
 
     #topic > .comments {
-      margin-top: 3em;
+      position: absolute;
+      top: 100%;
       padding-left: 0;
     }
 
