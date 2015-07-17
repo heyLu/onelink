@@ -1,6 +1,8 @@
 package main
 
 import (
+	"github.com/microcosm-cc/bluemonday"
+	"github.com/russross/blackfriday"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -63,8 +65,22 @@ func main() {
 	}
 }
 
+var sanitizePolicy *bluemonday.Policy
+
+func init() {
+	sanitizePolicy = bluemonday.StrictPolicy()
+	sanitizePolicy.AllowElements("p", "em", "strong", "a")
+	sanitizePolicy.AllowStandardURLs()
+	sanitizePolicy.AllowAttrs("href").OnElements("a")
+}
+
 var tmplFuncs = template.FuncMap{
 	"kw": mu.Keyword,
+	"markdown": func(content string) template.HTML {
+		htmlContent := blackfriday.MarkdownCommon([]byte(content))
+		htmlContent = sanitizePolicy.SanitizeBytes(htmlContent)
+		return template.HTML(htmlContent)
+	},
 }
 
 var indexTmpl = template.Must(template.New("index.html").
@@ -72,7 +88,7 @@ var indexTmpl = template.Must(template.New("index.html").
 	Parse(`
 {{ define "Comment" }}
 <article class="comment">
-  <p>{{ .Get (kw "comment" "content") }}</p>
+  {{ .Get (kw "comment" "content") | markdown }}
   <section class="comments">
   {{ range $comment := .Get (kw "comment" "replies") }}
     {{ template "Comment" $comment }}
@@ -125,8 +141,7 @@ var indexTmpl = template.Must(template.New("index.html").
       <article id="topic">
         <h1><a href="{{ .url }}">{{ .title }}</a></h1>
 
-        <p>{{ .description }}
-        </p>
+        {{ markdown .description }}
 
         <section class="comments">
         {{ range $comment := .comments }}

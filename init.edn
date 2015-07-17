@@ -6,7 +6,11 @@
 
  [:db/add #db/id[:db.part/user -1] :topic/comments #db/id[:db.part/user -2]]
  {:db/id #db/id[:db.part/user -2]
-  :comment/content "This is a comment, isn't it quite amazing?!"}
+  :comment/content "This is a comment, isn't it quite amazing?!
+
+Now with **Markdown!!**  (And [links](https://pbs.twimg.com/tweet_video/CKHyUMEUYAAgAR7.mp4)!)
+
+Basically *all* the stuff."}
 
  [:db/add #db/id[:db.part/user -2] :comment/replies #db/id[:db.part/user -3]]
  {:db/id #db/id[:db.part/user -3]
