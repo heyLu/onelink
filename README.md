@@ -64,7 +64,7 @@ some further ideas:
 - `:topic/id`, a short, unique, randomly generated string that will
     be used as a permanent identifier for the discussion
 - `:topic/author`, a reference to the person who posted the topic
-- `:comment/text`, a string containing the text of the comment
+- `:comment/content`, a string containing the text of the comment
 - `:comment/author`, a reference to the author of the post
 - `:comment/posted`, the date when the comment was posted
 
