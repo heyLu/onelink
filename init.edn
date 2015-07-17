@@ -1,0 +1,5 @@
+[; create an initial topic, explaining how stuff works
+ {:db/id #db/id[:db.part/user]
+  :topic/title "Hello, World!"
+  :topic/url "https://github.com/heyLu/onelink/#hello-world"
+  :topic/description "Welcome!"}]

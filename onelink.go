@@ -22,6 +22,7 @@ func main() {
 
 	if isNew {
 		mustTransactFile(conn, "schema.edn")
+		mustTransactFile(conn, "init.edn")
 	}
 }
 
