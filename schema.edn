@@ -3,7 +3,7 @@
   :db/ident :topic/id
   :db/valueType :db.type/string
   :db/cardinality :db.cardinality/one
-  :db/unique :db/value
+  :db/unique :db.unique/value
   :db/doc "A unique, randomly generated identifier for the topic"
   :db.install/_attribute :db.part/db}
  {:db/id #db/id[:db.part/db]
@@ -20,7 +20,7 @@
   :db.install/_attribute :db.part/db}
  {:db/id #db/id[:db.part/db]
   :db/ident :topic/description
-  :db.valueType :db.type/string
+  :db/valueType :db.type/string
   :db/cardinality :db.cardinality/one
   :db/doc "A description of the topic, as a starting point for the discussion"
   :db.install/_attribute :db.part/db}
@@ -72,7 +72,7 @@
  {:db/id #db/id[:db.part/db]
   :db/ident :comment/replies
   :db/valueType :db.type/ref
-  :db.cardinality :db.cardinality/many
+  :db/cardinality :db.cardinality/many
   :db/doc "References to replies to this comment"
   :db.install/_attribute :db.part/db}
 
