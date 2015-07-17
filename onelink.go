@@ -72,6 +72,7 @@ func init() {
 	sanitizePolicy.AllowElements("p", "em", "strong", "a")
 	sanitizePolicy.AllowStandardURLs()
 	sanitizePolicy.AllowAttrs("href").OnElements("a")
+	sanitizePolicy.AllowElements("ul", "ol", "li")
 }
 
 var tmplFuncs = template.FuncMap{

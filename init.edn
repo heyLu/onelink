@@ -14,7 +14,17 @@ Basically *all* the stuff."}
 
  [:db/add #db/id[:db.part/user -2] :comment/replies #db/id[:db.part/user -3]]
  {:db/id #db/id[:db.part/user -3]
-  :comment/content "And this is a reply, which is even more amazing!!!"}
+  :comment/content "And this is a reply, which is even more amazing!!!
+
+1. It has lists
+2. Yes
+3. (Silence)
+
+...
+
+- you don't
+- have to number them
+- btw"}
  [:db/add #db/id[:db.part/user -2] :comment/replies #db/id[:db.part/user -4]]
  {:db/id #db/id[:db.part/user -4]
   :comment/content "Another one, just for fun ..."}
