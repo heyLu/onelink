@@ -5,43 +5,50 @@
   :db/cardinality :db.cardinality/one
   :db/unique :db.unique/value
   :db/doc "A unique, randomly generated identifier for the topic"
-  :db.install/_attribute :db.part/db}
+  ;:db.install/_attribute :db.part/db
+  }
  {:db/id #db/id[:db.part/db]
   :db/ident :topic/url
   :db/valueType :db.type/uri
   :db/cardinality :db.cardinality/one
   :db/doc "A URL that is the subject of the discussion"
-  :db.install/_attribute :db.part/db}
+  ;:db.install/_attribute :db.part/db
+  }
  {:db/id #db/id[:db.part/db]
   :db/ident :topic/title
   :db/valueType :db.type/string
   :db/cardinality :db.cardinality/one
   :db/doc "The title of the topic, assigned by the author"
-  :db.install/_attribute :db.part/db}
+  ;:db.install/_attribute :db.part/db
+  }
  {:db/id #db/id[:db.part/db]
   :db/ident :topic/description
   :db/valueType :db.type/string
   :db/cardinality :db.cardinality/one
   :db/doc "A description of the topic, as a starting point for the discussion"
-  :db.install/_attribute :db.part/db}
+  ;:db.install/_attribute :db.part/db
+  }
  {:db/id #db/id[:db.part/db]
   :db/ident :topic/author
   :db/valueType :db.type/ref
   :db/cardinality :db.cardinality/one
   :db/doc "A reference to the author of the topic"
-  :db.install/_attribute :db.part/db}
+  ;:db.install/_attribute :db.part/db
+  }
  {:db/id #db/id[:db.part/db]
   :db/ident :topic/posted
   :db/valueType :db.type/instant
   :db/cardinality :db.cardinality/one
   :db/doc "The time this topic was posted"
-  :db.install/_attribute :db.part/db}
+  ;:db.install/_attribute :db.part/db
+  }
  {:db/id #db/id[:db.part/db]
   :db/ident :topic/comments
   :db/valueType :db.type/ref
   :db/cardinality :db.cardinality/many
   :db/doc "References to comments on this topic"
-  :db.install/_attribute :db.part/db}
+  ;:db.install/_attribute :db.part/db
+  }
 
  ; comment (id, author, posted, content, replies)
  {:db/id #db/id[:db.part/db]
@@ -50,31 +57,36 @@
   :db/cardinality :db.cardinality/one
   :db/unique :db.unique/value
   :db/doc "A unique, randomly generated identifier for the comment"
-  :db.install/_attribute :db.part/db}
+  ;:db.install/_attribute :db.part/db
+  }
  {:db/id #db/id[:db.part/db]
   :db/ident :comment/author
   :db/valueType :db.type/ref
   :db/cardinality :db.cardinality/one
   :db/doc "A reference to the author of the comment"
-  :db.install/_attribute :db.part/db}
+  ;:db.install/_attribute :db.part/db
+  }
  {:db/id #db/id[:db.part/db]
   :db/ident :comment/posted
   :db/valueType :db.type/instant
   :db/cardinality :db.cardinality/one
   :db/doc "The time this comment was posted"
-  :db.install/_attribute :db.part/db}
+  ;:db.install/_attribute :db.part/db
+  }
  {:db/id #db/id[:db.part/db]
   :db/ident :comment/content
   :db/valueType :db.type/string
   :db/cardinality :db.cardinality/one
   :db/doc "The content of the comment"
-  :db.install/_attribute :db.part/db}
+  ;:db.install/_attribute :db.part/db
+  }
  {:db/id #db/id[:db.part/db]
   :db/ident :comment/replies
   :db/valueType :db.type/ref
   :db/cardinality :db.cardinality/many
   :db/doc "References to replies to this comment"
-  :db.install/_attribute :db.part/db}
+  ;:db.install/_attribute :db.part/db
+  }
 
  ; user (name, description, joined)
  {:db/id #db/id[:db.part/db]
@@ -83,16 +95,19 @@
   :db/cardinality :db.cardinality/one
   :db/unique :db.unique/value
   :db/doc "The (unique) name of the user"
-  :db.install/_attribute :db.part/db}
+  ;:db.install/_attribute :db.part/db
+  }
  {:db/id #db/id[:db.part/db]
   :db/ident :user/description
   :db/valueType :db.type/string
   :db/cardinality :db.cardinality/one
   :db/doc "A short self-description of the user"
-  :db.install/_attribute :db.part/db}
+  ;:db.install/_attribute :db.part/db
+  }
  {:db/id #db/id[:db.part/db]
   :db/ident :user/joined
   :db/valueType :db.type/instant
   :db/cardinality :db.cardinality/one
   :db/doc "The date the user joined the community"
-  :db.install/_attribute :db.part/db}]
+  ;:db.install/_attribute :db.part/db
+  }]
