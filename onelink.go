@@ -55,7 +55,12 @@ func main() {
 			}
 		}
 	})
-	http.ListenAndServe("localhost:7777", nil)
+	addr := "localhost:7777"
+	log.Printf("Listening on http://%s\n", addr)
+	err = http.ListenAndServe(addr, nil)
+	if err != nil {
+		panic(err)
+	}
 }
 
 var tmplFuncs = template.FuncMap{
