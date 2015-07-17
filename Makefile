@@ -1,0 +1,3 @@
+build:
+	go get -v -d ./...
+	go build onelink.go
