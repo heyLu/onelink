@@ -37,6 +37,46 @@ Basically *all* the stuff."}
  [:db/add #db/id[:db.part/user -5] :comment/replies #db/id[:db.part/user -6]]
  {:db/id #db/id[:db.part/user -6]
   :comment/content "infinitum"}
+ [:db/add #db/id[:db.part/user -1] :topic/comments #db/id[:db.part/user -7]]
+ {:db/id #db/id[:db.part/user -7]
+  :comment/content "Hey there, more features: code blocks!
+
+Standard markdown code blocks:
+
+    $ ls
+    db  etc  init.edn  Makefile  onelink  onelink.go  onelink.tar.gz  README.md  schema.edn
+    $ ./onelink
+    2015/07/18 11:09:26 Listening on http://localhost:7777
+
+Fenced code blocks:
+
+```clojure
+(defn square [x]
+  (* x x))
+```
+
+Should also work with lists:
+
+- python
+
+    ```python
+    def square(x):
+      return x * x
+    ```
+- ruby
+
+    ```ruby
+    def square(x)
+       x * x
+    end
+    ```
+- haskell
+
+    ```haskell
+    square :: Num a => a -> a
+    square x = x * x
+    ```
+"}
 
  ; a few users
  {:db/id #db/id[:db.part/user -100]
