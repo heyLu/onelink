@@ -10,6 +10,7 @@ import (
 
 	"github.com/heyLu/mu"
 	"github.com/heyLu/mu/connection"
+	"github.com/heyLu/mu/database"
 )
 
 var dbUrl = "files://db?name=onelink"
@@ -65,6 +66,22 @@ func main() {
 	}
 }
 
+type Comment struct {
+	database.Entity
+}
+
+func NewComment(entity database.Entity) Comment {
+	return Comment{entity}
+}
+
+func (c Comment) Content() string {
+	return c.Get(mu.Keyword("comment", "content")).(string)
+}
+
+func (c Comment) Replies() []interface{} {
+	return c.Get(mu.Keyword("comment", "replies")).([]interface{})
+}
+
 var sanitizePolicy *bluemonday.Policy
 
 func init() {
@@ -82,6 +99,7 @@ var tmplFuncs = template.FuncMap{
 		htmlContent = sanitizePolicy.SanitizeBytes(htmlContent)
 		return template.HTML(htmlContent)
 	},
+	"comment": NewComment,
 }
 
 var indexTmpl = template.Must(template.New("index.html").
@@ -89,10 +107,10 @@ var indexTmpl = template.Must(template.New("index.html").
 	Parse(`
 {{ define "Comment" }}
 <article class="comment">
-  {{ .Get (kw "comment" "content") | markdown }}
+  {{ .Content | markdown }}
   <section class="comments">
-  {{ range $comment := .Get (kw "comment" "replies") }}
-    {{ template "Comment" $comment }}
+  {{ range $comment := .Replies }}
+    {{ template "Comment" (comment $comment) }}
   {{ end }}
   </section>
 </article>
@@ -146,7 +164,7 @@ var indexTmpl = template.Must(template.New("index.html").
 
         <section class="comments">
         {{ range $comment := .comments }}
-          {{ template "Comment" $comment }}
+          {{ template "Comment" (comment $comment) }}
         {{ else }}
           <p>No comments yet</p>
         {{ end }}
