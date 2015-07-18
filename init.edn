@@ -6,6 +6,7 @@
 
  [:db/add #db/id[:db.part/user -1] :topic/comments #db/id[:db.part/user -2]]
  {:db/id #db/id[:db.part/user -2]
+  :comment/author #db/id[:db.part/user -100]
   :comment/content "This is a comment, isn't it quite amazing?!
 
 Now with **Markdown!!**  (And [links](https://pbs.twimg.com/tweet_video/CKHyUMEUYAAgAR7.mp4)!)
@@ -14,6 +15,7 @@ Basically *all* the stuff."}
 
  [:db/add #db/id[:db.part/user -2] :comment/replies #db/id[:db.part/user -3]]
  {:db/id #db/id[:db.part/user -3]
+  :comment/author #db/id[:db.part/user -101]
   :comment/content "And this is a reply, which is even more amazing!!!
 
 1. It has lists
@@ -27,6 +29,7 @@ Basically *all* the stuff."}
 - btw"}
  [:db/add #db/id[:db.part/user -2] :comment/replies #db/id[:db.part/user -4]]
  {:db/id #db/id[:db.part/user -4]
+  :comment/author #db/id[:db.part/user -101]
   :comment/content "Another one, just for fun ..."}
  [:db/add #db/id[:db.part/user -4] :comment/replies #db/id[:db.part/user -5]]
  {:db/id #db/id[:db.part/user -5]
@@ -34,4 +37,10 @@ Basically *all* the stuff."}
  [:db/add #db/id[:db.part/user -5] :comment/replies #db/id[:db.part/user -6]]
  {:db/id #db/id[:db.part/user -6]
   :comment/content "infinitum"}
+
+ ; a few users
+ {:db/id #db/id[:db.part/user -100]
+  :user/name "admin"}
+ {:db/id #db/id[:db.part/user -101]
+  :user/name "lu"}
  ]
