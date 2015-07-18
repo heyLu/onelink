@@ -2,6 +2,8 @@ package main
 
 import (
 	"bytes"
+	"crypto/rand"
+	"encoding/hex"
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/schema"
@@ -116,6 +118,7 @@ func main() {
 			topicId = k.ValueAt(0).(int)
 		}
 
+		commentId := newRandomId()
 		txData := []tx.TxDatum{
 			tx.Datum{
 				Op: tx.Assert,
@@ -125,6 +128,7 @@ func main() {
 			tx.TxMap{
 				Id: database.Id(mu.Tempid(mu.DbPartUser, -1)),
 				Attributes: map[database.Keyword][]tx.Value{
+					mu.Keyword("comment", "id"):      []tx.Value{tx.NewValue(commentId)},
 					mu.Keyword("comment", "content"): []tx.Value{tx.NewValue(comment.Content)},
 				},
 			},
@@ -136,7 +140,7 @@ func main() {
 			return
 		}
 
-		http.Redirect(w, req, "/", http.StatusSeeOther)
+		http.Redirect(w, req, "/#"+commentId, http.StatusSeeOther)
 	})
 
 	router.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
@@ -346,6 +350,15 @@ var indexTmpl = template.Must(template.New("index.html").
   </body>
 </html>
 `))
+
+func newRandomId() string {
+	buf := make([]byte, 5)
+	_, err := rand.Read(buf)
+	if err != nil {
+		panic(err)
+	}
+	return hex.EncodeToString(buf)
+}
 
 func mustTransactFile(conn connection.Connection, file string) {
 	data, err := ioutil.ReadFile(file)
