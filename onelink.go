@@ -33,6 +33,7 @@ func main() {
 	}
 
 	router := mux.NewRouter()
+	router.PathPrefix("/lib").Handler(http.StripPrefix("/lib", http.FileServer(http.Dir("lib"))))
 	router.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
 		db := conn.Db()
 		res, err := mu.QString(`
@@ -137,6 +138,7 @@ var indexTmpl = template.Must(template.New("index.html").
   <head>
     <title>{{ .title }} - onelink</title>
     <meta charset="utf-8" />
+    <link rel="stylesheet" href="/lib/highlight.css" />
     <style>
     body {
       margin: 0;
@@ -196,6 +198,9 @@ var indexTmpl = template.Must(template.New("index.html").
         </section>
       </article>
     </section>
+
+    <script src="/lib/highlight.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
   </body>
 </html>
 `))
