@@ -6,6 +6,7 @@
 
  [:db/add #db/id[:db.part/user -1] :topic/comments #db/id[:db.part/user -2]]
  {:db/id #db/id[:db.part/user -2]
+  :comment/id "9a19e9dca3"
   :comment/author #db/id[:db.part/user -100]
   :comment/content "This is a comment, isn't it quite amazing?!
 
@@ -15,6 +16,7 @@ Basically *all* the stuff."}
 
  [:db/add #db/id[:db.part/user -2] :comment/replies #db/id[:db.part/user -3]]
  {:db/id #db/id[:db.part/user -3]
+  :comment/id "c0ce3ac192"
   :comment/author #db/id[:db.part/user -101]
   :comment/content "And this is a reply, which is even more amazing!!!
 
@@ -29,16 +31,20 @@ Basically *all* the stuff."}
 - btw"}
  [:db/add #db/id[:db.part/user -2] :comment/replies #db/id[:db.part/user -4]]
  {:db/id #db/id[:db.part/user -4]
+  :comment/id "7a0969e01e"
   :comment/author #db/id[:db.part/user -101]
   :comment/content "Another one, just for fun ..."}
  [:db/add #db/id[:db.part/user -4] :comment/replies #db/id[:db.part/user -5]]
  {:db/id #db/id[:db.part/user -5]
+  :comment/id "3b2fc3f260"
   :comment/content "Ad"}
  [:db/add #db/id[:db.part/user -5] :comment/replies #db/id[:db.part/user -6]]
  {:db/id #db/id[:db.part/user -6]
+  :comment/id "47c06a2936"
   :comment/content "infinitum"}
  [:db/add #db/id[:db.part/user -1] :topic/comments #db/id[:db.part/user -7]]
  {:db/id #db/id[:db.part/user -7]
+  :comment/id "312815f49b"
   :comment/content "Hey there, more features: code blocks!
 
 Standard markdown code blocks:

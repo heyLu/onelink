@@ -191,6 +191,10 @@ func NewComment(entity database.Entity) Comment {
 	return Comment{entity}
 }
 
+func (c Comment) Id() string {
+	return c.Get(mu.Keyword("comment", "id")).(string)
+}
+
 func (c Comment) Author() string {
 	author := c.Get(mu.Keyword("comment", "author"))
 	if author == nil {
@@ -233,7 +237,7 @@ var indexTmpl = template.Must(template.New("index.html").
 	Funcs(tmplFuncs).
 	Parse(`
 {{ define "Comment" }}
-<article class="comment">
+<article id="{{ .Id }}" class="comment" data-comment-id="{{ .Id }}">
   <span class="comment-meta">Written by {{ .Author }}</span>
   {{ .Content | markdown }}
   <section class="comments">
