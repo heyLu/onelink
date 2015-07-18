@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/gorilla/schema"
 	"github.com/heyLu/edn"
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/russross/blackfriday"
@@ -15,6 +16,7 @@ import (
 	"github.com/heyLu/mu"
 	"github.com/heyLu/mu/connection"
 	"github.com/heyLu/mu/database"
+	tx "github.com/heyLu/mu/transactor"
 )
 
 var dbUrl = "files://db?name=onelink"
@@ -79,6 +81,64 @@ func main() {
 		w.Write(resEdn.Bytes())
 	})
 
+	router.HandleFunc("/comment", func(w http.ResponseWriter, req *http.Request) {
+		if req.Method != "POST" {
+			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+
+		err := req.ParseForm()
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		decoder := schema.NewDecoder()
+		var comment CommentForm
+		err = decoder.Decode(&comment, req.PostForm)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+
+		db := conn.Db()
+		res, err := mu.QString(`
+{:find [?topic]
+ :where [[?topic :topic/title _]]}`,
+			db)
+		if err != nil {
+			log.Println(err)
+			http.Error(w, "internal server error", http.StatusInternalServerError)
+			return
+		}
+
+		var topicId int
+		for k, _ := range res {
+			topicId = k.ValueAt(0).(int)
+		}
+
+		txData := []tx.TxDatum{
+			tx.Datum{
+				Op: tx.Assert,
+				E:  database.Id(topicId),
+				A:  mu.Keyword("topic", "comments"),
+				V:  tx.NewValue(mu.Tempid(mu.DbPartUser, -1))},
+			tx.TxMap{
+				Id: database.Id(mu.Tempid(mu.DbPartUser, -1)),
+				Attributes: map[database.Keyword][]tx.Value{
+					mu.Keyword("comment", "content"): []tx.Value{tx.NewValue(comment.Content)},
+				},
+			},
+		}
+		_, err = conn.Transact(txData)
+		if err != nil {
+			log.Println(err)
+			http.Error(w, "internal server error", http.StatusInternalServerError)
+			return
+		}
+
+		http.Redirect(w, req, "/", http.StatusSeeOther)
+	})
+
 	router.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
 		db := conn.Db()
 		res, err := mu.QString(`
@@ -115,6 +175,12 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+type CommentForm struct {
+	InReplyTo string `schema:"in-reply-to"`
+	Content   string `schema:"content"`
+	Author    string `schema:"author"`
 }
 
 type Comment struct {
@@ -221,6 +287,18 @@ var indexTmpl = template.Must(template.New("index.html").
       margin-top: 0.1ex;
     }
 
+    #comment-form {
+      margin-bottom: 3em;
+    }
+
+    #comment-form textarea {
+      width: 100%;
+    }
+
+    #comment-form button[type="submit"] {
+      float: right;
+    }
+
     a {
       color: #555;
     }
@@ -235,6 +313,13 @@ var indexTmpl = template.Must(template.New("index.html").
         {{ markdown .description }}
 
         <section class="comments">
+        <form id="comment-form" method="POST" action="/comment">
+          <div class="field">
+            <textarea name="content" required placeholder="Say something"></textarea>
+          </div>
+          <button type="submit">Post</button>
+        </form>
+
         {{ range $comment := .comments }}
           {{ template "Comment" (comment $comment) }}
         {{ else }}
