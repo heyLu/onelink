@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gorilla/mux"
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/russross/blackfriday"
 	"html/template"
@@ -31,7 +32,8 @@ func main() {
 		mustTransactFile(conn, "init.edn")
 	}
 
-	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
+	router := mux.NewRouter()
+	router.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
 		db := conn.Db()
 		res, err := mu.QString(`
 {:find [?topic ?title ?description ?url]
@@ -58,6 +60,9 @@ func main() {
 			}
 		}
 	})
+
+	http.Handle("/", router)
+
 	addr := "localhost:7777"
 	log.Printf("Listening on http://%s\n", addr)
 	err = http.ListenAndServe(addr, nil)
