@@ -1,0 +1,11 @@
+[Unit]
+Description=One link
+
+[Service]
+User=nobody
+Group=nobody
+ExecStart=/srv/onelink/onelink
+WorkingDirectory=/srv/onelink
+
+[Install]
+WantedBy=multi-user.target
