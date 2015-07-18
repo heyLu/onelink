@@ -317,15 +317,15 @@ var indexTmpl = template.Must(template.New("index.html").
       background-color: white;
     }
 
-    #comment-form {
+    .comment-form {
       margin-bottom: 3em;
     }
 
-    #comment-form textarea {
+    .comment-form textarea {
       width: 100%;
     }
 
-    #comment-form button[type="submit"] {
+    .comment-form button[type="submit"] {
       float: right;
     }
 
@@ -343,7 +343,7 @@ var indexTmpl = template.Must(template.New("index.html").
         {{ markdown .description }}
 
         <section class="comments">
-        <form id="comment-form" method="POST" action="/comment">
+        <form class="comment-form" method="POST" action="/comment">
           <div class="field">
             <textarea name="content" required placeholder="Say something"></textarea>
           </div>
