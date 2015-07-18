@@ -325,7 +325,7 @@ var indexTmpl = template.Must(template.New("index.html").
       width: 100%;
     }
 
-    .comment-form button[type="submit"] {
+    .comment-form .comment-controls {
       float: right;
     }
 
@@ -347,7 +347,9 @@ var indexTmpl = template.Must(template.New("index.html").
           <div class="field">
             <textarea name="content" required placeholder="Say something"></textarea>
           </div>
-          <button type="submit">Post</button>
+          <div class="comment-controls">
+            <button type="submit">Post</button>
+          </div>
         </form>
 
         {{ range $comment := .comments }}
@@ -394,10 +396,14 @@ var indexTmpl = template.Must(template.New("index.html").
       contentEl.name = "content";
       contentWrapper.appendChild(contentEl);
 
+      var controls = document.createElement("div");
+      controls.className = "comment-controls"
+      form.appendChild(controls);
+
       var submitButton = document.createElement("button");
       submitButton.type = "submit";
       submitButton.textContent = "Post";
-      form.appendChild(submitButton);
+      controls.appendChild(submitButton);
 
       var cancelButton = document.createElement("button");
       cancelButton.textContent = "Cancel";
@@ -405,7 +411,7 @@ var indexTmpl = template.Must(template.New("index.html").
         ev.preventDefault();
         form.remove();
       });
-      form.appendChild(cancelButton);
+      controls.appendChild(cancelButton);
 
       var comments = commentEl.querySelector(".comments");
       if (comments.firstChild == null) {
