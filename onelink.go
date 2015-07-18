@@ -291,6 +291,14 @@ var indexTmpl = template.Must(template.New("index.html").
       margin-top: 0.1ex;
     }
 
+    .comment:target {
+      background-color: rgba(245, 251, 0, 0.1);
+    }
+
+    .comment:target .comment {
+      background-color: white;
+    }
+
     #comment-form {
       margin-bottom: 3em;
     }
