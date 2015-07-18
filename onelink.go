@@ -95,9 +95,10 @@ var sanitizePolicy *bluemonday.Policy
 
 func init() {
 	sanitizePolicy = bluemonday.StrictPolicy()
-	sanitizePolicy.AllowElements("p", "em", "strong", "a")
+	sanitizePolicy.AllowElements("p", "em", "strong", "code", "pre", "a")
 	sanitizePolicy.AllowStandardURLs()
 	sanitizePolicy.AllowAttrs("href").OnElements("a")
+	sanitizePolicy.AllowAttrs("class").OnElements("code")
 	sanitizePolicy.AllowElements("ul", "ol", "li")
 }
 
