@@ -309,7 +309,7 @@ var indexTmpl = template.Must(template.New("index.html").
       margin-top: 0.1ex;
     }
 
-    .comment:target, .comment-reply:target {
+    .comment:target {
       background-color: rgba(245, 251, 0, 0.1);
     }
 
@@ -370,7 +370,7 @@ var indexTmpl = template.Must(template.New("index.html").
 
       var prevReplyEl = document.getElementById(replyId);
       if (prevReplyEl) {
-        location.hash = replyId;
+        prevReplyEl.querySelector("textarea").focus();
         return;
       }
 
@@ -420,7 +420,6 @@ var indexTmpl = template.Must(template.New("index.html").
         comments.insertBefore(form, comments.firstChild);
       }
 
-      location.hash = replyId;
       contentEl.focus();
     }
 
