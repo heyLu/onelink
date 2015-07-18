@@ -74,6 +74,15 @@ func NewComment(entity database.Entity) Comment {
 	return Comment{entity}
 }
 
+func (c Comment) Author() string {
+	author := c.Get(mu.Keyword("comment", "author"))
+	if author == nil {
+		return "unknown"
+	} else {
+		return author.(database.Entity).Get(mu.Keyword("user", "name")).(string)
+	}
+}
+
 func (c Comment) Content() string {
 	return c.Get(mu.Keyword("comment", "content")).(string)
 }
@@ -107,6 +116,7 @@ var indexTmpl = template.Must(template.New("index.html").
 	Parse(`
 {{ define "Comment" }}
 <article class="comment">
+  <span class="comment-meta">Written by {{ .Author }}</span>
   {{ .Content | markdown }}
   <section class="comments">
   {{ range $comment := .Replies }}
@@ -144,10 +154,19 @@ var indexTmpl = template.Must(template.New("index.html").
     #topic > .comments {
       position: absolute;
       top: 100%;
+      width: 80ex;
       padding-left: 0;
     }
 
     .comments { padding-left: 1.5em; }
+
+    .comment-meta {
+      color: #777;
+    }
+
+    .comment p:first-of-type {
+      margin-top: 0.1ex;
+    }
 
     a {
       color: #555;
