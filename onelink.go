@@ -378,7 +378,7 @@ var indexTmpl = template.Must(template.New("index.html").
       form.id = replyId;
       form.method = "POST";
       form.action = "/comment";
-      form.className = "comment-reply";
+      form.className = "comment-form";
 
       var inReplyTo = document.createElement("input");
       inReplyTo.type = "hidden";
