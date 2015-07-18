@@ -150,7 +150,7 @@ var indexTmpl = template.Must(template.New("index.html").
     .comments { padding-left: 1.5em; }
 
     a {
-      color: #555
+      color: #555;
     }
     </style>
   </head>
