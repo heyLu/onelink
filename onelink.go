@@ -18,6 +18,7 @@ import (
 	"github.com/heyLu/mu"
 	"github.com/heyLu/mu/connection"
 	"github.com/heyLu/mu/database"
+	"github.com/heyLu/mu/index"
 	tx "github.com/heyLu/mu/transactor"
 )
 
@@ -255,7 +256,7 @@ var indexTmpl = template.Must(template.New("index.html").
 	Parse(`
 {{ define "Comment" }}
 <article id="{{ .Id }}" class="comment" data-comment-id="{{ .Id }}">
-  <span class="comment-meta">Written by {{ .Author }} (<a href="#{{ .Id }}">link</a>)</span>
+  <span class="comment-meta">Written by {{ .Author }} (<a href="#{{ .Id }}">link</a>, <a href="#" class="comment-reply">reply</a>)</span>
   {{ .Content | markdown }}
   <section class="comments">
   {{ range $comment := .Replies }}
@@ -308,7 +309,7 @@ var indexTmpl = template.Must(template.New("index.html").
       margin-top: 0.1ex;
     }
 
-    .comment:target {
+    .comment:target, .comment-reply:target {
       background-color: rgba(245, 251, 0, 0.1);
     }
 
@@ -358,6 +359,70 @@ var indexTmpl = template.Must(template.New("index.html").
       </article>
     </section>
 
+    <script>
+    function handleReply(ev) {
+      ev.preventDefault();
+      var commentEl = ev.target.parentElement.parentElement;
+      var commentId = commentEl.dataset.commentId;
+      var replyId = "reply-" + commentId;
+
+      var prevReplyEl = document.getElementById(replyId);
+      if (prevReplyEl) {
+        location.hash = replyId;
+        return;
+      }
+
+      var form = document.createElement("form");
+      form.id = replyId;
+      form.method = "POST";
+      form.action = "/comment";
+      form.className = "comment-reply";
+
+      var inReplyTo = document.createElement("input");
+      inReplyTo.type = "hidden";
+      inReplyTo.name = "in-reply-to";
+      inReplyTo.value = commentId;
+      form.appendChild(inReplyTo);
+
+      var contentWrapper = document.createElement("div");
+      contentWrapper.class = "field";
+      form.appendChild(contentWrapper);
+
+      var contentEl = document.createElement("textarea");
+      contentEl.placeholder = "Say something";
+      contentEl.required = "required";
+      contentEl.name = "content";
+      contentWrapper.appendChild(contentEl);
+
+      var submitButton = document.createElement("button");
+      submitButton.type = "submit";
+      submitButton.textContent = "Post";
+      form.appendChild(submitButton);
+
+      var cancelButton = document.createElement("button");
+      cancelButton.textContent = "Cancel";
+      cancelButton.addEventListener("click", function(ev) {
+        ev.preventDefault();
+        form.remove();
+      });
+      form.appendChild(cancelButton);
+
+      var comments = commentEl.querySelector(".comments");
+      if (comments.firstChild == null) {
+        comments.appendChild(form);
+      } else {
+        comments.insertBefore(form, comments.firstChild);
+      }
+
+      location.hash = replyId;
+      contentEl.focus();
+    }
+
+    var replyEls = document.querySelectorAll(".comment-reply")
+    for (var i = 0; i < replyEls.length; i++) {
+      replyEls[i].addEventListener("click", handleReply);
+    }
+    </script>
     <script src="/lib/highlight.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
   </body>
