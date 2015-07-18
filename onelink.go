@@ -102,37 +102,50 @@ func main() {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 		}
 
-		db := conn.Db()
-		res, err := mu.QString(`
+		txData := make([]tx.TxDatum, 0, 2)
+		if comment.InReplyTo == "" { // (top-level) comment on a topic
+			db := conn.Db()
+			res, err := mu.QString(`
 {:find [?topic]
  :where [[?topic :topic/title _]]}`,
-			db)
-		if err != nil {
-			log.Println(err)
-			http.Error(w, "internal server error", http.StatusInternalServerError)
-			return
-		}
+				db)
+			if err != nil {
+				log.Println(err)
+				http.Error(w, "internal server error", http.StatusInternalServerError)
+				return
+			}
 
-		var topicId int
-		for k, _ := range res {
-			topicId = k.ValueAt(0).(int)
-		}
+			var topicId int
+			for k, _ := range res {
+				topicId = k.ValueAt(0).(int)
+			}
 
-		commentId := newRandomId()
-		txData := []tx.TxDatum{
-			tx.Datum{
+			txData = append(txData, tx.Datum{
 				Op: tx.Assert,
 				E:  database.Id(topicId),
 				A:  mu.Keyword("topic", "comments"),
-				V:  tx.NewValue(mu.Tempid(mu.DbPartUser, -1))},
+				V:  tx.NewValue(mu.Tempid(mu.DbPartUser, -1))})
+		} else { // reply to a comment
+			txData = append(txData, tx.Datum{
+				Op: tx.Assert,
+				E: database.LookupRef{
+					Attribute: mu.Keyword("comment", "id"),
+					Value:     index.NewValue(comment.InReplyTo)},
+				A: mu.Keyword("comment", "replies"),
+				V: tx.NewValue(mu.Tempid(mu.DbPartUser, -1)),
+			})
+		}
+
+		commentId := newRandomId()
+		txData = append(txData,
 			tx.TxMap{
 				Id: database.Id(mu.Tempid(mu.DbPartUser, -1)),
 				Attributes: map[database.Keyword][]tx.Value{
 					mu.Keyword("comment", "id"):      []tx.Value{tx.NewValue(commentId)},
 					mu.Keyword("comment", "content"): []tx.Value{tx.NewValue(comment.Content)},
 				},
-			},
-		}
+			})
+
 		_, err = conn.Transact(txData)
 		if err != nil {
 			log.Println(err)
