@@ -238,7 +238,7 @@ var indexTmpl = template.Must(template.New("index.html").
 	Parse(`
 {{ define "Comment" }}
 <article id="{{ .Id }}" class="comment" data-comment-id="{{ .Id }}">
-  <span class="comment-meta">Written by {{ .Author }}</span>
+  <span class="comment-meta">Written by {{ .Author }} (<a href="#{{ .Id }}">link</a>)</span>
   {{ .Content | markdown }}
   <section class="comments">
   {{ range $comment := .Replies }}
