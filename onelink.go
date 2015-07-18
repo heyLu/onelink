@@ -1,7 +1,10 @@
 package main
 
 import (
+	"bytes"
+	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/heyLu/edn"
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/russross/blackfriday"
 	"html/template"
@@ -33,7 +36,49 @@ func main() {
 	}
 
 	router := mux.NewRouter()
+
 	router.PathPrefix("/lib").Handler(http.StripPrefix("/lib", http.FileServer(http.Dir("lib"))))
+
+	router.HandleFunc("/query", func(w http.ResponseWriter, req *http.Request) {
+		q, err := edn.DecodeString(req.URL.Query().Get("q"))
+		if err != nil {
+			log.Println(err)
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		db := conn.Db()
+		res, err := mu.Q(q, db)
+		if err != nil {
+			log.Println(err)
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		resEdn := new(bytes.Buffer)
+		resEdn.WriteString("#{")
+		first := true
+		for tuple, _ := range res {
+			if first {
+				resEdn.WriteByte('\n')
+				first = false
+			}
+			resEdn.WriteString("  ")
+			resEdn.WriteByte('[')
+			l := tuple.Length()
+			for i := 0; i < l; i++ {
+				resEdn.WriteString(fmt.Sprintf("%#v", tuple.ValueAt(i)))
+				if i < l-1 {
+					resEdn.WriteByte(' ')
+				}
+			}
+			resEdn.WriteByte(']')
+			resEdn.WriteByte('\n')
+		}
+		resEdn.WriteString("}")
+		w.Write(resEdn.Bytes())
+	})
+
 	router.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
 		db := conn.Db()
 		res, err := mu.QString(`
