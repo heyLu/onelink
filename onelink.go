@@ -97,7 +97,7 @@ func main() {
 		}
 
 		decoder := schema.NewDecoder()
-		var comment CommentForm
+		var comment CommentInfo
 		err = decoder.Decode(&comment, req.PostForm)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -195,7 +195,7 @@ func main() {
 	}
 }
 
-type CommentForm struct {
+type CommentInfo struct {
 	InReplyTo string `schema:"in-reply-to"`
 	Content   string `schema:"content"`
 	Author    string `schema:"author"`
