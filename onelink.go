@@ -305,6 +305,10 @@ var indexTmpl = template.Must(template.New("index.html").
       color: #777;
     }
 
+    .comment {
+      padding: 0.5ex;
+    }
+
     .comment p:first-of-type {
       margin-top: 0.1ex;
     }
